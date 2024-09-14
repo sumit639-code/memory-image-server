@@ -77,9 +77,8 @@ const userLogin = asynchandler(async (req, res) => {
   const options = {
     httpOnly: true,
     secure: true,
-    sameSite: 'None'
+    sameSite: "None",
   };
-  
 
   return res
     .status(200)
@@ -110,8 +109,8 @@ const userLogout = asynchandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
-    sameSite: 'strict'
+    secure: process.env.NODE_ENV === "production",
+    sameSite: "strict",
   };
 
   return res
@@ -120,6 +119,12 @@ const userLogout = asynchandler(async (req, res) => {
     .clearCookie("refreshToken", options)
     .json(new apiresponse(200, "User has been successfully logged out"));
 });
+const getUser = asynchandler(async (req, res) => {
+  const user = req.user;
+  const mainUser = await User.findById(user._id);
+  res
+    .status(200)
+    .json(new apiresponse(200, mainUser, "the new score of the user is this "));
+});
 
-
-export { userLogin, userRegister, userLogout };
+export { userLogin, userRegister, userLogout,getUser };
