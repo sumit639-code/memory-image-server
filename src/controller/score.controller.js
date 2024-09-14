@@ -10,10 +10,25 @@ const updateScore = asynchandler(async (req, res) => {
     throw new apierror(400, "couldn't get any user...");
   }
   const user = await User.findById(user_req._id);
-  const updateScore =await user.updateOne({ score: score });
+  const updateScore = await user.updateOne({ score: score });
 
-  res.status(200).json(new apiresponse(200,user,"user score has been updated"))
+  res
+    .status(200)
+    .json(new apiresponse(200, user, "user score has been updated"));
 });
 
+const allScore = asynchandler(async (req, res) => {
+  const user = await User.find();
+  res.status(200).json(new apiresponse(200, user, "user details"));
+});
 
-export {updateScore};
+const getScore = asynchandler(async (req, res) => {
+  const user = req.user;
+  const mainUser = await User.findById(user._id);
+  res
+    .status(200)
+    .json(
+      new apiresponse(200, mainUser.score, "the new score of the user is this ")
+    );
+});
+export { updateScore, allScore,getScore };

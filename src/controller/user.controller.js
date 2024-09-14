@@ -76,9 +76,10 @@ const userLogin = asynchandler(async (req, res) => {
 
   const options = {
     httpOnly: true,
-    secure: process.env.NODE_ENV === "production", // Set secure flag based on environment
-    sameSite: "strict", // Optionally, add sameSite attribute for additional security
+    secure: true,
+    sameSite: 'None'
   };
+  
 
   return res
     .status(200)
@@ -96,20 +97,29 @@ const userLogin = asynchandler(async (req, res) => {
 const userLogout = asynchandler(async (req, res) => {
   const user = req.user;
   if (!user) {
-    throw new apierror(300, "there is some error getting the user");
+    throw new apierror(300, "There is some error getting the user");
   }
+
   const remRefresh = await User.findByIdAndUpdate(user._id, {
     refreshToken: "",
   });
+
+  if (!remRefresh) {
+    throw new apierror(400, "Failed to clear refresh token.");
+  }
+
   const options = {
-    httpsOnly: true,
-    secure: true,
+    httpOnly: true,
+    secure: process.env.NODE_ENV === 'production',
+    sameSite: 'strict'
   };
+
   return res
     .status(200)
     .clearCookie("accessToken", options)
     .clearCookie("refreshToken", options)
-    .json(new apiresponse(200, "user has been successfully logout"));
+    .json(new apiresponse(200, "User has been successfully logged out"));
 });
+
 
 export { userLogin, userRegister, userLogout };

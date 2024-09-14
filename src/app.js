@@ -11,8 +11,8 @@ const corsOptions = {
   allowedHeaders: ["Content-Type", "Authorization"], // Specify which headers can be sent
   credentials: true, // Enable credentials (cookies, authorization headers, etc.)
 };
-
-app.use(cors(corsOptions));
+app.use(cors({ origin: true, credentials: true }));
+// app.use(cors(corsOptions));
 app.use(express.json({ limit: "10mb" }));
 app.use(express.urlencoded({ extended: true }));
 app.use(express.static("public"));
